@@ -20,6 +20,10 @@
   font-size: 32px;
 }
 
+.vessel-card .vessel-operate-icon {
+  font-size: 18px;
+}
+
 .vessel-card .vessel-name {
   margin: 0 8px;
   flex-grow: 1;

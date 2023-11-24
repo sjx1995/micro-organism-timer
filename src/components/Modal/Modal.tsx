@@ -23,15 +23,18 @@ import type {
   IReduceModalData,
 } from "../../App";
 
+import "./Modal.css";
+
 const BaseItem: React.FC<{
   label: string;
   children: ReactNode;
 }> = ({ label, children }) => (
-  <div>
-    <span>{label}</span>
+  <div className="setting-item">
+    <div className="label">{label}</div>
     {children}
   </div>
 );
+
 const InputItem: React.FC<{
   label: string;
   value: string;
@@ -47,6 +50,7 @@ const InputItem: React.FC<{
     />
   </BaseItem>
 );
+
 const DateSelectItem: React.FC<{
   label: string;
   value: Dayjs;

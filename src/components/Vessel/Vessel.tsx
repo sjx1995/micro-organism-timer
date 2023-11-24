@@ -3,7 +3,7 @@
  * @Author: Sunly
  * @Date: 2023-11-17 07:44:11
  */
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import dayjs from "dayjs";
 import { Card } from "antd";
@@ -17,25 +17,6 @@ function getTime(time: number): string {
   const hours = dayjs(time).diff(0, "hour") - days * 24;
   return `${days}天${hours}时`;
 }
-
-const EditIcon: React.FC<{ showModal: IChangeModalType; data: IVessel }> = ({
-  showModal,
-  data,
-}) => (
-  <Icon
-    onClick={() => showModal("EDIT", data)}
-    icon="material-symbols:edit-outline"
-  />
-);
-const DelIcon: React.FC<{ showModal: IChangeModalType; data: IVessel }> = ({
-  showModal,
-  data,
-}) => (
-  <Icon
-    onClick={() => showModal("DEL", data)}
-    icon="material-symbols:delete-outline"
-  />
-);
 
 const Vessel: React.FC<{
   info: IVessel;
@@ -60,10 +41,16 @@ const Vessel: React.FC<{
       className="vessel-card"
       actions={[
         <div onClick={() => onShowModal("EDIT", { ...info })}>
-          <Icon icon="material-symbols:edit-outline" />
+          <Icon
+            className="vessel-operate-icon"
+            icon="material-symbols:edit-outline"
+          />
         </div>,
         <div onClick={() => onShowModal("DEL", { ...info })}>
-          <Icon icon="material-symbols:delete-outline" />
+          <Icon
+            className="vessel-operate-icon"
+            icon="material-symbols:delete-outline"
+          />
         </div>,
       ]}
     >
