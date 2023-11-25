@@ -13,6 +13,7 @@ import {
   message,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
+import { IVesselTemperature } from "../../utils/shared";
 
 import type {
   IModalType,
@@ -24,11 +25,6 @@ import type {
 } from "../../App";
 
 import "./VesselModal.css";
-
-export enum IVesselTemperature {
-  high = "35℃ 室温",
-  low = "4℃ 低温",
-}
 
 const BaseItem: React.FC<{
   label: string;

@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Checkbox, Divider, Input, message } from "antd";
 import { v4 as uuid } from "uuid";
 import dayjs from "dayjs";
-import { IVesselTemperature } from "./VesselModal";
+import { IVesselTemperature } from "../../utils/shared";
 
 import type { CheckboxChangeEvent, CheckboxOptionType } from "antd/es/checkbox";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
@@ -26,13 +26,14 @@ const createVesselOptions = (vesselData: IVessel[]) => {
     ...r,
     id: uuid(),
   }));
+  const now = Date.now();
   vesselOptions = originVessel.map(
     ({ id, name, time, temperature, volume }) => ({
       label: `${name} ${volume} ${
         temperature === "high"
           ? IVesselTemperature.high
           : IVesselTemperature.low
-      } ${dayjs(time).format("YYYY年MM月DD日 HH时")}`,
+      } ${dayjs(time - now).format("")}`,
       value: id,
     })
   );
