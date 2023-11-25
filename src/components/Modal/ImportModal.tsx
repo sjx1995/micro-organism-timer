@@ -54,6 +54,7 @@ const ImportModal: React.FC<{
   useEffect(() => {
     if (visible) {
       setText("");
+      setCheckedList([]);
       vesselOptions = [];
     }
   }, [visible]);

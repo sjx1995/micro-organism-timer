@@ -24,7 +24,7 @@ const Vessel: React.FC<{
     setPassTime(getPassTime(time));
     let timer = setInterval(() => {
       setPassTime(getPassTime(time));
-    }, 1000);
+    }, 60 * 10 * 1000);
     return () => {
       clearInterval(timer);
     };
