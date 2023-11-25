@@ -23,7 +23,7 @@ import type {
   IReduceModalData,
 } from "../../App";
 
-import "./Modal.css";
+import "./VesselModal.css";
 
 const BaseItem: React.FC<{
   label: string;

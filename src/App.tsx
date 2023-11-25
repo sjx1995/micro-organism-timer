@@ -8,7 +8,7 @@ import { useLocalStorage } from "./hooks/useStorage";
 import { v4 as uuid } from "uuid";
 import Vessel from "./components/Vessel/Vessel";
 import ToolBox from "./components/ToolBox/ToolBox";
-import Modal from "./components/Modal/Modal";
+import VesselModal from "./components/Modal/VesselModal";
 
 import type { RadioChangeEvent } from "antd";
 import type { Dayjs } from "dayjs";
@@ -121,7 +121,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Modal
+      <VesselModal
         vessel={modalData}
         type={modalType}
         onChangeModalType={handleChangeModalType}
@@ -130,7 +130,7 @@ const App: React.FC = () => {
         onSetVesselDate={handleSetVesselDate}
       />
       <main>
-        <ToolBox onChangeModalType={handleChangeModalType} />
+        <ToolBox onChangeModalType={handleChangeModalType} vessels={vessels} />
         {sortedVessels.map((vessel) => (
           <Vessel
             info={vessel}
