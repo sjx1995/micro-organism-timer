@@ -25,6 +25,11 @@ import type {
 
 import "./VesselModal.css";
 
+export enum IVesselTemperature {
+  high = "35℃ 室温",
+  low = "4℃ 低温",
+}
+
 const BaseItem: React.FC<{
   label: string;
   children: ReactNode;
@@ -75,8 +80,8 @@ const RadioItem: React.FC<{
   onChange: (e: RadioChangeEvent) => void;
 }> = ({ label, value, onChange, disabled }) => {
   const items: { [K in IVessel["temperature"]]: string } = {
-    low: "4℃ 低温",
-    high: "35℃ 室温",
+    low: IVesselTemperature.low,
+    high: IVesselTemperature.high,
   };
   return (
     <BaseItem label={label}>

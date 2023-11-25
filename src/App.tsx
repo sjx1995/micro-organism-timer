@@ -37,6 +37,7 @@ export type ISetVesselData = <
 ) => void;
 export type ISetVesselDate = (e: Dayjs) => void;
 export type IReduceModalData = () => void;
+export type IImportVessels = (newVessels: IVessel[]) => void;
 
 const VESSELS_STORAGE_NAME = "_VESSELS_DATA";
 
@@ -49,7 +50,6 @@ const App: React.FC = () => {
 
   const [modalType, setModalType] = useState<IModalType>("HIDE");
   const handleChangeModalType: IChangeModalType = (type, data?) => {
-    console.log("show modal");
     if (type === "ADD") {
       setModalData({
         id: "",
@@ -119,6 +119,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleImportVessels: IImportVessels = (newVessels) => {
+    console.log("import", newVessels);
+    setVessels(VESSELS_STORAGE_NAME, [...sortedVessels, ...newVessels]);
+  };
+
   return (
     <div className="App">
       <VesselModal
@@ -130,7 +135,11 @@ const App: React.FC = () => {
         onSetVesselDate={handleSetVesselDate}
       />
       <main>
-        <ToolBox onChangeModalType={handleChangeModalType} vessels={vessels} />
+        <ToolBox
+          onChangeModalType={handleChangeModalType}
+          vessels={vessels}
+          onImportVessels={handleImportVessels}
+        />
         {sortedVessels.map((vessel) => (
           <Vessel
             info={vessel}
