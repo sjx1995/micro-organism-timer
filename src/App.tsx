@@ -120,7 +120,6 @@ const App: React.FC = () => {
   };
 
   const handleImportVessels: IImportVessels = (newVessels) => {
-    console.log("import", newVessels);
     setVessels(VESSELS_STORAGE_NAME, [...sortedVessels, ...newVessels]);
   };
 

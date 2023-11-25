@@ -5,18 +5,12 @@
  */
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
-import dayjs from "dayjs";
 import { Card } from "antd";
+import { getPassTime } from "../../utils/shared";
 
 import type { IChangeModalType, IVessel } from "../../App";
 
 import "./Vessel.css";
-
-function getTime(time: number): string {
-  const days = dayjs(time).diff(0, "day");
-  const hours = dayjs(time).diff(0, "hour") - days * 24;
-  return `${days}天${hours}时`;
-}
 
 const Vessel: React.FC<{
   info: IVessel;
@@ -24,13 +18,13 @@ const Vessel: React.FC<{
 }> = ({ info, onShowModal }) => {
   const { name, remark, temperature, time, volume } = info;
 
-  const [passTime, setPassTime] = useState(Date.now() - time);
+  const [passTime, setPassTime] = useState("");
 
   useEffect(() => {
-    setPassTime(Date.now() - time);
+    setPassTime(getPassTime(time));
     let timer = setInterval(() => {
-      setPassTime((time) => Date.now() - time);
-    }, 10 * 60 * 1000);
+      setPassTime(getPassTime(time));
+    }, 1000);
     return () => {
       clearInterval(timer);
     };
@@ -63,7 +57,7 @@ const Vessel: React.FC<{
         <div className="vessel-name">{name}</div>
         <div className="vessel-volume">{volume}</div>
       </div>
-      <div className="vessel-time">{getTime(passTime)}</div>
+      <div className="vessel-time">{passTime}</div>
       <div className="vessel-remark">{remark}</div>
     </Card>
   );

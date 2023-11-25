@@ -6,8 +6,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Checkbox, Divider, Input, message } from "antd";
 import { v4 as uuid } from "uuid";
-import dayjs from "dayjs";
-import { IVesselTemperature } from "../../utils/shared";
+import { IVesselTemperature, getPassTime } from "../../utils/shared";
 
 import type { CheckboxChangeEvent, CheckboxOptionType } from "antd/es/checkbox";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
@@ -21,19 +20,17 @@ const { TextArea } = Input;
 let vesselOptions: CheckboxOptionType[] = [];
 let originVessel: IVessel[] = [];
 const createVesselOptions = (vesselData: IVessel[]) => {
-  console.log("create !!!");
   originVessel = vesselData.map((r) => ({
     ...r,
     id: uuid(),
   }));
-  const now = Date.now();
   vesselOptions = originVessel.map(
     ({ id, name, time, temperature, volume }) => ({
-      label: `${name} ${volume} ${
+      label: `🏷️${name} 🫙${volume} 🌡️${
         temperature === "high"
           ? IVesselTemperature.high
           : IVesselTemperature.low
-      } ${dayjs(time - now).format("")}`,
+      } ⏱️${getPassTime(time)}`,
       value: id,
     })
   );
@@ -47,8 +44,6 @@ const ImportModal: React.FC<{
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleOk = () => {
-    console.log(checkedList);
-    console.log(originVessel);
     onImport(originVessel.filter(({ id }) => checkedList.includes(id)));
     onClose();
   };
