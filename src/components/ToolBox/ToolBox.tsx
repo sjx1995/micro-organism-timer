@@ -26,6 +26,11 @@ const ToolBox: React.FC<{
     messageApi.success("数据已复制到剪切板");
   };
 
+  const copiedVessel = vessels.map((vessel) => {
+    const { id, ...rest } = vessel;
+    return rest;
+  });
+
   return (
     <>
       {contextHolder}
@@ -36,7 +41,10 @@ const ToolBox: React.FC<{
           onClick={() => onChangeModalType("ADD")}
         />
         <FloatButton description={ImportIcon} tooltip="导入" />
-        <CopyToClipboard text={JSON.stringify(vessels)} onCopy={handleCopied}>
+        <CopyToClipboard
+          text={JSON.stringify(copiedVessel)}
+          onCopy={handleCopied}
+        >
           <FloatButton description={ExportIcon} tooltip="导出" />
         </CopyToClipboard>
       </FloatButton.Group>
