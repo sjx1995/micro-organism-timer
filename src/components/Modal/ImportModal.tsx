@@ -3,15 +3,22 @@
  * @Author: Sunly
  * @Date: 2023-11-25 07:20:38
  */
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Input,
+  Modal,
+  Radio,
+  RadioChangeEvent,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Checkbox, Divider, Input, message } from "antd";
-import { v4 as uuid } from "uuid";
 import { IVesselTemperature, getPassTime } from "../../utils/shared";
-
+import { useVesselStore } from "../../store/vessel.store";
 import type { CheckboxChangeEvent, CheckboxOptionType } from "antd/es/checkbox";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import type { IImportVessels, IVessel } from "../../App";
-
 import "./ImportModal.css";
 
 const CheckboxGroup = Checkbox.Group;
@@ -19,18 +26,22 @@ const { TextArea } = Input;
 
 let vesselOptions: CheckboxOptionType[] = [];
 let originVessel: IVessel[] = [];
-const createVesselOptions = (vesselData: IVessel[]) => {
-  originVessel = vesselData.map((r) => ({
-    ...r,
-    id: uuid(),
-  }));
+const getExistVessel = (id: string, storeVessels: IVessel[]) =>
+  storeVessels.findIndex((v) => v.id === id);
+const createVesselOptions = (
+  vesselData: IVessel[],
+  storeVessels: IVessel[]
+) => {
+  originVessel = vesselData;
   vesselOptions = originVessel.map(
     ({ id, name, time, temperature, volume }) => ({
       label: `🏷️${name} 🫙${volume} 🌡️${
         temperature === "high"
           ? IVesselTemperature.high
           : IVesselTemperature.low
-      } ⏱️${getPassTime(time)}`,
+      } ⏱️${getPassTime(time)} ${
+        getExistVessel(id, storeVessels) !== -1 ? "⚠有冲突" : ""
+      }`,
       value: id,
     })
   );
@@ -41,10 +52,15 @@ const ImportModal: React.FC<{
   onClose: () => void;
   onImport: IImportVessels;
 }> = ({ visible, onClose, onImport }) => {
+  const { vessels: storeVessels } = useVesselStore();
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleOk = () => {
-    onImport(originVessel.filter(({ id }) => checkedList.includes(id)));
+    onImport(
+      originVessel.filter(({ id }) => checkedList.includes(id)),
+      isCover
+    );
     onClose();
   };
   const handleCancel = () => {
@@ -62,11 +78,16 @@ const ImportModal: React.FC<{
   const [text, setText] = useState("");
   const handleParse = () => {
     try {
-      createVesselOptions(JSON.parse(text));
+      createVesselOptions(JSON.parse(text), storeVessels);
       setCheckedList([]);
     } catch (error) {
       messageApi.error("数据格式错误");
     }
+  };
+
+  const [isCover, setCover] = useState(true);
+  const onChangeCoverMode = (e: RadioChangeEvent) => {
+    setCover(e.target.value);
   };
 
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
@@ -107,6 +128,11 @@ const ImportModal: React.FC<{
         </Button>
 
         <div style={{ display: showCheckAll ? "block" : "none" }}>
+          <Divider orientation="left">导入的数据和原数据冲突时</Divider>
+          <Radio.Group onChange={onChangeCoverMode} value={isCover}>
+            <Radio value={true}>覆盖原数据</Radio>
+            <Radio value={false}>保留两者</Radio>
+          </Radio.Group>
           <Divider orientation="left">选择要导入的数据</Divider>
           <Checkbox
             indeterminate={indeterminate}

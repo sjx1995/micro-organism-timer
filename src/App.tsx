@@ -15,6 +15,8 @@ import type { Dayjs } from "dayjs";
 
 import "./App.css";
 
+import { useVesselStore } from "./store/vessel.store";
+
 export type IVessel = {
   id: string;
   name: string;
@@ -37,16 +39,17 @@ export type ISetVesselData = <
 ) => void;
 export type ISetVesselDate = (e: Dayjs) => void;
 export type IReduceModalData = () => void;
-export type IImportVessels = (newVessels: IVessel[]) => void;
-
-const VESSELS_STORAGE_NAME = "_VESSELS_DATA";
+export type IImportVessels = (newVessels: IVessel[], isCover: boolean) => void;
 
 const App: React.FC = () => {
-  const [vessels, setVessels] = useLocalStorage<IVessel[]>(
-    VESSELS_STORAGE_NAME,
-    []
-  );
-  const sortedVessels = vessels.sort((a, b) => a.time - b.time);
+  const { vessels, addVessel, editVessel, removeVessel, importVessels } =
+    useVesselStore();
+
+  // const [vessels, setVessels] = useLocalStorage<IVessel[]>(
+  //   VESSELS_STORAGE_NAME,
+  //   []
+  // );
+  // const sortedVessels = vessels.sort((a, b) => a.time - b.time);
 
   const [modalType, setModalType] = useState<IModalType>("HIDE");
   const handleChangeModalType: IChangeModalType = (type, data?) => {
@@ -92,35 +95,16 @@ const App: React.FC = () => {
   };
   const handleReduceModalData: IReduceModalData = () => {
     if (modalType === "ADD") {
-      const id = uuid();
-      setVessels(VESSELS_STORAGE_NAME, [
-        ...sortedVessels,
-        {
-          ...modalData,
-          id,
-        },
-      ]);
+      addVessel(modalData);
     } else if (modalType === "EDIT") {
-      setVessels(
-        VESSELS_STORAGE_NAME,
-        sortedVessels.map((vessel) => {
-          if (vessel.id === modalData.id) {
-            return modalData;
-          } else {
-            return vessel;
-          }
-        })
-      );
+      editVessel(modalData);
     } else if (modalType === "DEL") {
-      setVessels(
-        VESSELS_STORAGE_NAME,
-        sortedVessels.filter((vessel) => vessel.id !== modalData.id)
-      );
+      removeVessel(modalData.id);
     }
   };
 
-  const handleImportVessels: IImportVessels = (newVessels) => {
-    setVessels(VESSELS_STORAGE_NAME, [...sortedVessels, ...newVessels]);
+  const handleImportVessels: IImportVessels = (newVessels, isCover) => {
+    importVessels(newVessels, isCover);
   };
 
   return (
@@ -139,7 +123,7 @@ const App: React.FC = () => {
           vessels={vessels}
           onImportVessels={handleImportVessels}
         />
-        {sortedVessels.map((vessel) => (
+        {vessels.map((vessel) => (
           <Vessel
             info={vessel}
             key={vessel.id}

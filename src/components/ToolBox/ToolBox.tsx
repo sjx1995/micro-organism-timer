@@ -31,10 +31,6 @@ const ToolBox: React.FC<{
     setCopied(true);
     messageApi.success("数据已复制到剪切板");
   };
-  const copiedVessel = vessels.map((vessel) => {
-    const { id, ...rest } = vessel;
-    return rest;
-  });
 
   const [importModalVisible, setModalVisible] = useState(false);
   const handleCloseImportModal = () => {
@@ -60,10 +56,7 @@ const ToolBox: React.FC<{
           tooltip="导入数据"
           onClick={() => setModalVisible(true)}
         />
-        <CopyToClipboard
-          text={JSON.stringify(copiedVessel)}
-          onCopy={handleCopied}
-        >
+        <CopyToClipboard text={JSON.stringify(vessels)} onCopy={handleCopied}>
           <FloatButton description={ExportIcon} tooltip="导出数据到剪贴板" />
         </CopyToClipboard>
       </FloatButton.Group>
