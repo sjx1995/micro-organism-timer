@@ -1,8 +1,5 @@
 .vessel-card {
-  min-width: 300px;
-  flex-grow: 1;
   height: 218px;
-  margin: 8px;
   position: relative;
   overflow: hidden;
 }
