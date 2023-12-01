@@ -45,7 +45,7 @@ const ToolBox: React.FC<{
         onImport={onImportVessels}
       />
       {contextHolder}
-      <FloatButton.Group shape="square" style={{ right: 94 }}>
+      <FloatButton.Group shape="square">
         <FloatButton
           description={AddIcon}
           tooltip="添加"
