@@ -30,7 +30,7 @@ const Vessel: React.FC<{ info: IVessel }> = ({ info }) => {
 
   return (
     <Card
-      className="vessel-card"
+      className={`vessel-card ${temperature}`}
       actions={[
         <div onClick={() => openEditVesselModal({ ...info })}>
           <Icon
@@ -49,12 +49,12 @@ const Vessel: React.FC<{ info: IVessel }> = ({ info }) => {
         </div>,
       ]}
     >
+      {temperature === "high" ? (
+        <Icon className="vessel-icon" icon="mdi:home-temperature-outline" />
+      ) : (
+        <Icon className="vessel-icon" icon="mingcute:snow-line" />
+      )}
       <div className="vessel-title">
-        {temperature === "high" ? (
-          <Icon className="vessel-icon" icon="mdi:home-temperature-outline" />
-        ) : (
-          <Icon className="vessel-icon" icon="mingcute:snow-line" />
-        )}
         <div className="vessel-name">{name}</div>
         <div className="vessel-volume">{volume}</div>
       </div>

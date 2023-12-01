@@ -1,7 +1,37 @@
 .vessel-card {
-  width: 300px;
+  min-width: 300px;
+  flex-grow: 1;
   height: 218px;
   margin: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vessel-card.high,
+.vessel-card.high .ant-card-actions {
+  background-color: #ffccc7;
+}
+
+.vessel-card.low,
+.vessel-card.low .ant-card-actions {
+  background-color: #bae0ff;
+}
+
+.vessel-card .vessel-icon {
+  position: absolute;
+  top: -64px;
+  right: -41px;
+  font-size: 240px;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.vessel-card .ant-card-actions,
+.vessel-card .ant-card-actions > ul,
+.vessel-card .ant-card-actions > li {
+  background-color: transparent;
+  border-color: #ccc;
+  border-inline-end-color: #ccc !important;
 }
 
 @media screen and (max-width: 666px) {
@@ -16,10 +46,6 @@
   align-items: center;
 }
 
-.vessel-card .vessel-icon {
-  font-size: 32px;
-}
-
 .vessel-card .vessel-operate-icon {
   font-size: 18px;
 }
@@ -31,11 +57,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
+  z-index: 2;
 }
 
 .vessel-card .vessel-volume {
-  padding-top: 4px;
+  font-size: 16px;
   align-self: flex-start;
+  position: relative;
+  z-index: 2;
 }
 
 .vessel-card .vessel-time {
@@ -43,6 +73,8 @@
   font-weight: 700;
   line-height: 56px;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .vessel-card .vessel-remark {
@@ -52,6 +84,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
+  z-index: 2;
 }
 
 .vessel-card .vessel-del-btn:hover {
