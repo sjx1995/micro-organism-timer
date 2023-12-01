@@ -38,7 +38,10 @@ const Vessel: React.FC<{ info: IVessel }> = ({ info }) => {
             icon="material-symbols:edit-outline"
           />
         </div>,
-        <div onClick={() => openDelVesselModal({ ...info })}>
+        <div
+          onClick={() => openDelVesselModal({ ...info })}
+          className="vessel-del-btn"
+        >
           <Icon
             className="vessel-operate-icon"
             icon="material-symbols:delete-outline"

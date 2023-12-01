@@ -53,3 +53,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.vessel-card .vessel-del-btn:hover {
+  color: red;
+}
