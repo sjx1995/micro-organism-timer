@@ -13,12 +13,12 @@ import {
   RadioChangeEvent,
   message,
 } from "antd";
-import React, { useEffect, useState } from "react";
-import { IVesselTemperature, getPassTime } from "../../utils/shared";
-import { useVesselStore } from "../../store/vessel.store";
 import type { CheckboxChangeEvent, CheckboxOptionType } from "antd/es/checkbox";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
-import type { IImportVessels, IVessel } from "../../App";
+import React, { useEffect, useState } from "react";
+import { useVesselStore, type IVessel } from "../../store/vessel.store";
+import { IVesselTemperature, getPassTime } from "../../utils/shared";
+import { v4 as uuid } from "uuid";
 import "./ImportModal.css";
 
 const CheckboxGroup = Checkbox.Group;
@@ -32,7 +32,10 @@ const createVesselOptions = (
   vesselData: IVessel[],
   storeVessels: IVessel[]
 ) => {
-  originVessel = vesselData;
+  originVessel = vesselData.map((vessel) => ({
+    ...vessel,
+    id: vessel.id || uuid(),
+  }));
   vesselOptions = originVessel.map(
     ({ id, name, time, temperature, volume }) => ({
       label: `🏷️${name} 🫙${volume} 🌡️${
@@ -47,17 +50,16 @@ const createVesselOptions = (
   );
 };
 
-const ImportModal: React.FC<{
-  visible: boolean;
-  onClose: () => void;
-  onImport: IImportVessels;
-}> = ({ visible, onClose, onImport }) => {
-  const { vessels: storeVessels } = useVesselStore();
+const ImportModal: React.FC<{ visible: boolean; onClose: () => void }> = ({
+  visible,
+  onClose,
+}) => {
+  const { vessels: storeVessels, importVessels } = useVesselStore();
 
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleOk = () => {
-    onImport(
+    importVessels(
       originVessel.filter(({ id }) => checkedList.includes(id)),
       isCover
     );

@@ -3,14 +3,13 @@
  * @Author: Sunly
  * @Date: 2023-11-17 15:37:53
  */
-import React, { useState } from "react";
-import { FloatButton, message } from "antd";
 import { Icon } from "@iconify/react";
+import { FloatButton, message } from "antd";
+import React, { useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useVesselModalStore } from "../../store/modal.store";
+import { useVesselStore } from "../../store/vessel.store";
 import ImportModal from "../Modal/ImportModal";
-
-import type { IChangeModalType, IImportVessels, IVessel } from "../../App";
-
 import "./ToolBox.css";
 
 const AddIcon = <Icon className="tool-box-icon" icon="ic:outline-add" />;
@@ -19,11 +18,10 @@ const ImportIcon = (
 );
 const ExportIcon = <Icon className="tool-box-icon" icon="mingcute:copy-line" />;
 
-const ToolBox: React.FC<{
-  onChangeModalType: IChangeModalType;
-  vessels: IVessel[];
-  onImportVessels: IImportVessels;
-}> = ({ onChangeModalType, vessels, onImportVessels }) => {
+const ToolBox: React.FC = () => {
+  const { vessels } = useVesselStore();
+  const { openAddVesselModal } = useVesselModalStore();
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const [, setCopied] = useState(false);
@@ -42,14 +40,13 @@ const ToolBox: React.FC<{
       <ImportModal
         visible={importModalVisible}
         onClose={handleCloseImportModal}
-        onImport={onImportVessels}
       />
       {contextHolder}
       <FloatButton.Group shape="square">
         <FloatButton
           description={AddIcon}
           tooltip="添加"
-          onClick={() => onChangeModalType("ADD")}
+          onClick={openAddVesselModal}
         />
         <FloatButton
           description={ImportIcon}

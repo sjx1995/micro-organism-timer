@@ -3,11 +3,11 @@
  * @Author: Sunly
  * @Date: 2023-12-01 05:34:06
  */
+import { v4 as uuid } from "uuid";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { v4 as uuid } from "uuid";
 
-type IVessel = {
+export type IVessel = {
   id: string;
   name: string;
   time: number;
@@ -29,7 +29,7 @@ const VESSELS_STORAGE_NAME = "__VESSELS_DATA";
 const useVesselStore = create(
   persist<VesselStore>(
     (set, get) => ({
-      vessels: get()?.vessels.sort((a, b) => a.time - b.time) || [],
+      vessels: get()?.vessels || [],
       addVessel: (vessel) =>
         set((state) => ({
           vessels: [...state.vessels, { ...vessel, id: uuid() }],
@@ -45,8 +45,6 @@ const useVesselStore = create(
           vessels: state.vessels.filter((item) => item.id !== id),
         })),
       importVessels: (vessels, isCover) =>
-        // isCover为true，对相同id的vessel进行覆盖
-        // isCover为false，对相同id的vessel创建新的id
         set((state) => ({
           vessels: isCover
             ? [
