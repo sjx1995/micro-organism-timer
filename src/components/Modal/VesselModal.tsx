@@ -56,6 +56,7 @@ const DateSelectItem: React.FC<{
       value={value}
       onChange={onChange}
       showTime={{ defaultValue: dayjs() }}
+      inputReadOnly={true}
       allowClear={false}
       disabled={disabled}
     />
