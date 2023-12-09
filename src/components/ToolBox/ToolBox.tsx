@@ -53,7 +53,7 @@ const ToolBox: React.FC = () => {
 
       <ButtonGroup
         variant="contained"
-        style={{ position: "fixed", right: "16px", bottom: "16px" }}
+        style={{ position: "fixed", right: "16px", bottom: "16px", zIndex: 99 }}
       >
         <Tooltip title="添加数据" arrow>
           <Button onClick={openAddVesselModal}>
