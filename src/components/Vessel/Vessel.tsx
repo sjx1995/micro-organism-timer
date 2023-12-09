@@ -60,10 +60,7 @@ const Vessel: React.FC<{ info: IVessel }> = ({ info }) => {
         <Typography variant="h5" gutterBottom>
           {passTime}
         </Typography>
-        <Typography
-          variant="body2"
-          color={remark ? colors.grey["800"] : colors.grey["400"]}
-        >
+        <Typography variant="body2" style={{ opacity: remark ? "0.5" : "0.2" }}>
           {remark || "暂无备注"}
         </Typography>
       </CardContent>
