@@ -4,27 +4,28 @@
  * @Date: 2023-11-25 07:20:38
  */
 import {
+  Alert,
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
-  Input,
-  Modal,
+  FormControlLabel,
+  FormGroup,
   Radio,
-  RadioChangeEvent,
-  message,
-} from "antd";
-import type { CheckboxChangeEvent, CheckboxOptionType } from "antd/es/checkbox";
-import type { CheckboxValueType } from "antd/es/checkbox/Group";
+  RadioGroup,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { useVesselStore, type IVessel } from "../../store/vessel.store";
 import { IVesselTemperature, getPassTime } from "../../utils/shared";
-import { v4 as uuid } from "uuid";
 import "./ImportModal.css";
 
-const CheckboxGroup = Checkbox.Group;
-const { TextArea } = Input;
-
-let vesselOptions: CheckboxOptionType[] = [];
+let vesselOptions: { label: string; value: string }[] = [];
 let originVessel: IVessel[] = [];
 const getExistVessel = (id: string, storeVessels: IVessel[]) =>
   storeVessels.findIndex((v) => v.id === id);
@@ -43,7 +44,7 @@ const createVesselOptions = (
           ? IVesselTemperature.high
           : IVesselTemperature.low
       } ⏱️${getPassTime(time)} ${
-        getExistVessel(id, storeVessels) !== -1 ? "⚠有冲突" : ""
+        getExistVessel(id, storeVessels) !== -1 ? "⚠️有冲突" : ""
       }`,
       value: id,
     })
@@ -56,11 +57,11 @@ const ImportModal: React.FC<{ visible: boolean; onClose: () => void }> = ({
 }) => {
   const { vessels: storeVessels, importVessels } = useVesselStore();
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const [open, setOpen] = useState(false);
 
   const handleOk = () => {
     importVessels(
-      originVessel.filter(({ id }) => checkedList.includes(id)),
+      originVessel.filter((_, i) => checkedList[i]),
       isCover
     );
     onClose();
@@ -81,75 +82,129 @@ const ImportModal: React.FC<{ visible: boolean; onClose: () => void }> = ({
   const handleParse = () => {
     try {
       createVesselOptions(JSON.parse(text), storeVessels);
-      setCheckedList([]);
+      setCheckedList(new Array(vesselOptions.length).fill(false));
     } catch (error) {
-      messageApi.error("数据格式错误");
+      setOpen(true);
     }
   };
 
   const [isCover, setCover] = useState(true);
-  const onChangeCoverMode = (e: RadioChangeEvent) => {
-    setCover(e.target.value);
-  };
 
-  const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
-  const checkAll = vesselOptions.length === checkedList.length;
+  const [checkedList, setCheckedList] = useState<boolean[]>([]);
   const showCheckAll = vesselOptions.length > 0;
-  const indeterminate =
-    checkedList.length > 0 && checkedList.length < vesselOptions.length;
-  const onChange = (list: CheckboxValueType[]) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
+    const list = [...checkedList];
+    list[i] = e.target.checked;
     setCheckedList(list);
   };
-
-  const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    setCheckedList(
-      e.target.checked ? vesselOptions.map(({ value }) => value) : []
-    );
+  const onCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckedList(checkedList.map(() => e.target.checked));
   };
 
   return (
     <>
-      {contextHolder}
-      <Modal
-        title="解析并导入数据"
-        open={visible}
-        onOk={handleOk}
-        okText="导入"
-        okButtonProps={{ disabled: checkedList.length === 0 }}
-        onCancel={handleCancel}
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={() => setOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Divider orientation="left">解析数据</Divider>
-        <TextArea
-          placeholder="将复制的数据粘贴到此处"
-          autoSize={{ maxRows: 4, minRows: 4 }}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <Button className="parse-btn" onClick={handleParse}>
-          解析
-        </Button>
+        <Alert
+          onClose={() => setOpen(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          数据格式错误
+        </Alert>
+      </Snackbar>
 
-        <div style={{ display: showCheckAll ? "block" : "none" }}>
-          <Divider orientation="left">导入的数据和原数据冲突时</Divider>
-          <Radio.Group onChange={onChangeCoverMode} value={isCover}>
-            <Radio value={true}>覆盖原数据</Radio>
-            <Radio value={false}>保留两者</Radio>
-          </Radio.Group>
-          <Divider orientation="left">选择要导入的数据</Divider>
-          <Checkbox
-            indeterminate={indeterminate}
-            onChange={onCheckAllChange}
-            checked={checkAll}
-          >
-            全选
-          </Checkbox>
-          <CheckboxGroup
-            options={vesselOptions}
-            value={checkedList}
-            onChange={onChange}
+      <Dialog
+        open={visible}
+        onClose={handleCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth
+      >
+        <DialogTitle>导入并解析数据</DialogTitle>
+        <DialogContent>
+          <Divider textAlign="left">
+            <div style={{ margin: "8px 0" }}>解析数据</div>
+          </Divider>
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="原始数据"
+            multiline
+            rows={4}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="将复制的数据粘贴到此处"
           />
-        </div>
-      </Modal>
+          <Button className="parse-btn" onClick={handleParse}>
+            解析
+          </Button>
+
+          <div style={{ display: showCheckAll ? "block" : "none" }}>
+            <Divider textAlign="left">
+              <div style={{ margin: "8px 0" }}>导入的数据和原数据冲突时</div>
+            </Divider>
+
+            <RadioGroup
+              row
+              name="controlled-radio-buttons-group"
+              value={isCover}
+              onChange={(e) => setCover(e.target.value === "true")}
+            >
+              <FormControlLabel
+                value={true}
+                control={<Radio />}
+                label=" 覆盖原数据"
+              />
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label=" 保留两者"
+              />
+            </RadioGroup>
+
+            <Divider textAlign="left">
+              <div style={{ margin: "8px 0" }}>选择要导入的数据</div>
+            </Divider>
+
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checkedList.every((v) => v)}
+                    onChange={onCheckAll}
+                  />
+                }
+                label="全选"
+              />
+              {vesselOptions.map(({ label, value }, i) => (
+                <FormControlLabel
+                  key={value}
+                  control={
+                    <Checkbox
+                      checked={checkedList[i]}
+                      onChange={(e) => onChange(e, i)}
+                    />
+                  }
+                  label={label}
+                />
+              ))}
+            </FormGroup>
+          </div>
+
+          <DialogActions>
+            <Button onClick={handleCancel}>取消</Button>{" "}
+            <Button onClick={handleOk} disabled={checkedList.length === 0}>
+              导入
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -4,7 +4,16 @@
  * @Date: 2023-11-17 07:44:11
  */
 import { Icon } from "@iconify/react";
-import { Card } from "antd";
+import {
+  Button,
+  CardHeader,
+  Avatar,
+  Card,
+  CardActions,
+  CardContent,
+  Typography,
+  colors,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useVesselModalStore } from "../../store/modal.store";
 import type { IVessel } from "../../store/vessel.store";
@@ -29,37 +38,48 @@ const Vessel: React.FC<{ info: IVessel }> = ({ info }) => {
   }, [time]);
 
   return (
-    <Card
-      className={`vessel-card ${temperature}`}
-      actions={[
-        <div onClick={() => openEditVesselModal({ ...info })}>
-          <Icon
-            className="vessel-operate-icon"
-            icon="material-symbols:edit-outline"
-          />
-        </div>,
-        <div
-          onClick={() => openDelVesselModal({ ...info })}
-          className="vessel-del-btn"
+    <Card className="vessel-card">
+      <CardHeader
+        avatar={
+          temperature === "high" ? (
+            <Avatar sx={{ bgcolor: colors.red["400"] }}>
+              <Icon icon="mdi:home-temperature-outline" />
+            </Avatar>
+          ) : (
+            <Avatar sx={{ bgcolor: colors.blue["400"] }}>
+              <Icon icon="mingcute:snow-line" />
+            </Avatar>
+          )
+        }
+        title={name}
+        titleTypographyProps={{ variant: "h6" }}
+        subheader={volume}
+      />
+
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          {passTime}
+        </Typography>
+        <Typography
+          variant="body2"
+          color={remark ? colors.grey["800"] : colors.grey["400"]}
         >
-          <Icon
-            className="vessel-operate-icon"
-            icon="material-symbols:delete-outline"
-          />
-        </div>,
-      ]}
-    >
-      {temperature === "high" ? (
-        <Icon className="vessel-icon" icon="mdi:home-temperature-outline" />
-      ) : (
-        <Icon className="vessel-icon" icon="mingcute:snow-line" />
-      )}
-      <div className="vessel-title">
-        <div className="vessel-name">{name}</div>
-        <div className="vessel-volume">{volume}</div>
-      </div>
-      <div className="vessel-time">{passTime}</div>
-      <div className="vessel-remark">{remark}</div>
+          {remark || "暂无备注"}
+        </Typography>
+      </CardContent>
+
+      <CardActions>
+        <Button size="small" onClick={() => openEditVesselModal({ ...info })}>
+          修改
+        </Button>
+        <Button
+          size="small"
+          color="error"
+          onClick={() => openDelVesselModal({ ...info })}
+        >
+          删除
+        </Button>
+      </CardActions>
     </Card>
   );
 };

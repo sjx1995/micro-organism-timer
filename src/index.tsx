@@ -3,22 +3,23 @@
  * @Author: Sunly
  * @Date: 2023-11-17 06:29:30
  */
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
+import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { ConfigProvider } from "antd";
-import zhCN from "antd/locale/zh_CN";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <App />
-    </ConfigProvider>
+    </LocalizationProvider>
   </React.StrictMode>
 );
 

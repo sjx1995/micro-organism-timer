@@ -1,90 +1,10 @@
 .vessel-card {
-  height: 218px;
   position: relative;
   overflow: hidden;
-}
-
-.vessel-card.high,
-.vessel-card.high .ant-card-actions {
-  background-color: #ffccc7;
-}
-
-.vessel-card.low,
-.vessel-card.low .ant-card-actions {
-  background-color: #bae0ff;
-}
-
-.vessel-card .vessel-icon {
-  position: absolute;
-  top: -64px;
-  right: -41px;
-  font-size: 240px;
-  z-index: 1;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.vessel-card .ant-card-actions,
-.vessel-card .ant-card-actions > ul,
-.vessel-card .ant-card-actions > li {
-  background-color: transparent;
-  border-color: #ccc;
-  border-inline-end-color: #ccc !important;
 }
 
 @media screen and (max-width: 666px) {
   .vessel-card {
     width: 100%;
   }
-}
-
-.vessel-card .vessel-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.vessel-card .vessel-operate-icon {
-  font-size: 18px;
-}
-
-.vessel-card .vessel-name {
-  margin: 0 8px;
-  flex-grow: 1;
-  font-size: 24px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  position: relative;
-  z-index: 2;
-}
-
-.vessel-card .vessel-volume {
-  font-size: 16px;
-  align-self: flex-start;
-  position: relative;
-  z-index: 2;
-}
-
-.vessel-card .vessel-time {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 56px;
-  text-align: center;
-  position: relative;
-  z-index: 2;
-}
-
-.vessel-card .vessel-remark {
-  font-size: 16px;
-  height: 24px;
-  color: #999;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  position: relative;
-  z-index: 2;
-}
-
-.vessel-card .vessel-del-btn:hover {
-  color: red;
 }
